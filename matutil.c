@@ -44,7 +44,7 @@ matrix* MAT_matrix(int r, int c, int init_zeros) {
 vector* MAT_vector(int r, int init_zeros) {
 	vector *vp = (vector *) malloc(sizeof (vector));
 
-	float *rows = (float *) malloc(r * sizeof float);
+	float *rows = (float *) malloc(r * sizeof (float));
 	if (!rows) matutilerror("MAT_vector: failure to allocate rows");
 
 	*vp = (vector) {r, rows};
@@ -85,7 +85,7 @@ void MAT_printmatrix(matrix *m) {
 	printf("\n");
 	for (int i = 0; i < m->rows; i++) {
 		for (int j = 0; j < m->cols; j++) {
-			printf("%6.3d  ", m->mat[i][j]);
+			printf("%6.3f  ", m->mat[i][j]);
 		}
 		printf("\n");
 	}
@@ -95,7 +95,7 @@ void MAT_printmatrix(matrix *m) {
 void MAT_printvector(vector *v) {
 	printf("\n");
 	for (int i = 0; i < v->rows; i++) {
-		printf("%6.3d\n", v->vec[i]);
+		printf("%6.3f\n", v->vec[i]);
 	}
 	printf("\n");
 }
@@ -173,7 +173,7 @@ matrix* MAT_multiply_mm(matrix *ma, matrix *mb) {
 vector* MAT_multiply_mv(matrix *m, vector *v) {
 	if (m->cols != v->rows) matutilerror("MAT_multiply_mv: input matrix / vector misaligned");
 
-	vector *res = MAT_vector(m->rows);
+	vector *res = MAT_vector(m->rows, MAT_NO);
 
 	for (int res_row = 0; res_row < m->rows; res_row++) {
 		for (int i = 0; i < m->cols; i++) {
@@ -192,7 +192,7 @@ vector* MAT_solve_gausselim(matrix *m, vector *v) {
 	if (m->rows != n) matutilerror("MAT_solve_gausselim: input matrix is not square");
 	if (v->rows != n) matutilerror("MAT_solve_gausselim: input vector / matrix sizes misaligned");
 
-	vector *x = MAT_vector(n - 1, MAT_NO);
+	vector *x = MAT_vector(n, MAT_NO);
 	matrix *a = MAT_copymatrix(m);
 	vector *b = MAT_copyvector(v);
 

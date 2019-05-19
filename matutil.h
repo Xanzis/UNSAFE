@@ -1,5 +1,6 @@
 #ifndef _MATRIXUTIL_
-# define _MATRIXUTIL_
+#define _MATRIXUTIL_
+#endif
 
 // Collection of Linear Algebra Utilities
 // Amended from CFD/
@@ -14,13 +15,13 @@ struct matrix {
 	int rows;
 	int cols;
 	float **mat;
-}
+};
 
 typedef struct vector vector;
 struct vector {
 	int rows;
 	float *vec;
-}
+};
 
 void matutilerror(char *error_text);
 
@@ -43,6 +44,6 @@ void MAT_multiply_vs(vector *v, float s);
 matrix* MAT_copymatrix(matrix *m);
 vector* MAT_copyvector(vector *v);
 matrix* MAT_multiply_mm(matrix *ma, matrix *mb);
-vector* MAT_multiply_mv(matrix *m, *vector v);
+vector* MAT_multiply_mv(matrix *m, vector *v);
 
 vector* MAT_solve_gausselim(matrix *m, vector *v);
