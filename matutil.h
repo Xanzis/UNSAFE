@@ -1,6 +1,5 @@
 #ifndef _MATRIXUTIL_
 #define _MATRIXUTIL_
-#endif
 
 // Collection of Linear Algebra Utilities
 // Amended from CFD/
@@ -47,3 +46,5 @@ matrix* MAT_multiply_mm(matrix *ma, matrix *mb);
 vector* MAT_multiply_mv(matrix *m, vector *v);
 
 vector* MAT_solve_gausselim(matrix *m, vector *v);
+
+#endif

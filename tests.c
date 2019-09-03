@@ -3,7 +3,7 @@
 #include "matutil.h"
 
 int matutil() {
-	printf("Testing Matutil ...\n")
+	printf("Testing Matutil ...\n");
 	float testmat_def[9] = {22, 15, 3, -3, -1, 0, -2, 1, 0};
 	matrix *testmatrix = MAT_matrix(3, 3, 0);
 	matrix *backupmat = MAT_matrix(3, 3, 0);
