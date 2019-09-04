@@ -49,14 +49,14 @@ struct table {
 };
 
 table* init_table(char *filename);
-void IN_load_table(table* t);
-void IN_free_item(item* i);
+table* IN_load_table(char* fileloc);
+void IN_free_item(item* it);
 void IN_free_section(section* s);
 void IN_free_table(table* t);
 
 section* IN_find_section(table* t, char* section_name);
 item* IN_get_item(section* s, int id);
-float IN_get_float(item* i, int idx);
-int IN_get_int(item *i, int idx);
+float IN_get_float(item* it, int idx);
+int IN_get_int(item *it, int idx);
 
 #endif

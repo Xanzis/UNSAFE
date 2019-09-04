@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matutil.h"
+#include "inutil-r.h"
 
 int matutil() {
 	printf("Testing Matutil ...\n");
@@ -48,7 +49,30 @@ int matutil() {
 	return 0;
 }
 
+int inutil() {
+	printf("Testing Inutil ... \n");
+	table *framevals = IN_load_table("frame1.us");
+	printf("Frame loaded.\n");
+	section *sct = IN_find_section(framevals, "Beams");
+	printf("Beams found\n");
+	item *it = IN_get_item(sct, 2);
+	printf("Line id 2 found\n");
+	printf("First item of line id 2: %d\n", IN_get_int(it, 0));
+
+	sct = IN_find_section(framevals, "Forces");
+	printf("Forces found\n");
+	it = IN_get_item(sct, 0);
+	printf("Line id 0 found\n");
+	printf("Second item of line id 2: %f\n", IN_get_float(it, 1));
+
+	printf("Freeing table ... ");
+	IN_free_table(framevals);
+	printf("Done.\n");
+	return 0;
+}
+
 int main() {
 	matutil();
+	inutil();
 	return 0;
 }
