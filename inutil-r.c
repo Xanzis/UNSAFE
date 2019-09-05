@@ -210,6 +210,7 @@ void IN_free_table(table* t) {
 	}
 	free(t->sects);
 	free(t->fileloc);
+	free(t);
 }
 
 section* IN_find_section(table* t, char* section_name) {

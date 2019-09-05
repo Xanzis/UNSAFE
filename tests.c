@@ -23,9 +23,9 @@ int matutil() {
 		backupvec->vec[i] = testvec_def[i];
 	}
 
-	printf("Test values\n");
-	MAT_printmatrix(testmatrix);
-	MAT_printvector(testvec);
+	//printf("Test values\n");
+	//MAT_printmatrix(testmatrix);
+	//MAT_printvector(testvec);
 
 	printf("Here goes\n");
 
@@ -38,6 +38,8 @@ int matutil() {
 	printf("Recreated b vector (From A . x)\n");
 	MAT_printvector(rec_b);
 
+	MAT_freevector(rec_b);
+
 	rec_b = MAT_multiply_mv(backupmat, res);
 	printf("Backup, unaltered A:\n");
 	MAT_printmatrix(backupmat);
@@ -45,6 +47,15 @@ int matutil() {
 	MAT_printvector(backupvec);
 	printf("Recreated b vector from original A:\n");
 	MAT_printvector(rec_b);
+
+	printf("Freeing memory ... ");
+	MAT_freematrix(testmatrix);
+	MAT_freematrix(backupmat);
+	MAT_freevector(testvec);
+	MAT_freevector(backupvec);
+	MAT_freevector(res);
+	MAT_freevector(rec_b);
+	printf("Done.\n");
 
 	return 0;
 }
