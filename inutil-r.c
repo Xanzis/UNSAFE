@@ -239,13 +239,19 @@ item* IN_get_item(section* s, int id) {
 }
 
 float IN_get_float(item* it, int idx) {
-	if (idx >= it->quantcount) inutilerror("Requested index overshoots item length");
+	if (idx >= it->quantcount) {
+		fprintf(stderr, "Item ID %d quantcount %d request idx %d\n", it->id, it->quantcount, idx);
+		inutilerror("IN_get_float: Requested index overshoots item length");
+	}
 	if (it->quants[idx].isint) inutilerror("Float requested; integer stored");
 	return it->quants[idx].val_float;
 }
 
 int IN_get_int(item *it, int idx) {
-	if (idx >= it->quantcount) inutilerror("Requested index overshoots item length");
+	if (idx >= it->quantcount) {
+		fprintf(stderr, "Item ID %d quantcount %d request idx %d\n", it->id, it->quantcount, idx);
+		inutilerror("IN_get_int: Requested index overshoots item length");
+	}
 	if (!(it->quants[idx].isint)) inutilerror("Integer requested; float stored");
 	return it->quants[idx].val_int;
 }
