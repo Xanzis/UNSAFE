@@ -11,103 +11,39 @@ void unsafeerror(char *error_text) {
 	exit(1);
 }
 
-vector* solve_forces(frame *f) {
-	// Takes force and constraint inputs of f and solves for the frame forces
-	// There should be <=n forces and strictly three constraints
-	// Returns a vector of x components first, then y components by index of nodes in frame
-
-	float net_x = 0;
-	float net_y = 0;
-	float net_torque = 0;
-
-	coor origin = (coor) {0, 0};
-	// Torque magnitude is A B sin theta
-	force frc;
-	float theta_1, len_1, theta;
-	coor p_vec;
-	for (int i = 0; i < f->forcecount; i++) {
-		frc = f->forces[i];
-		p_vec = UN_get_node(f, frc.n_id)->loc;
-		theta_1 = atan2(p_vec.y, p_vec.x); // Angle to position vector (correct sign)
-		theta = theta_1 - frc.theta; // Angle between position and force vectors
-		len_1 = UN_dist(origin, p_vec); // Length of p_vec. Inefficient as hell, I know TODO speedup
-
-		net_torque += len_1 * frc.mag * sin(theta); // Add on the torque applied by F
-
-		net_x += frc.mag * cos(frc.theta);
-		net_y += frc.mag * sin(frc.theta); // Maybe precompute these later
-	}
-
-	// Build matrix and solve
-	if (f->constraintcount != 3) {
-		UN_printframe(f);
-		unsafeerror("Frame must have 3 constraints");
-	}
-	matrix *cst_mat = MAT_matrix(3, 3, MAT_YES);
-	vector *net_vals = MAT_vector(3, MAT_NO); // Net x, net y, net torque
-	net_vals->vec[0] = -1 * net_x; // Constraint solutions must counteract the forces
-	net_vals->vec[1] = -1 * net_y;
-	net_vals->vec[2] = -1 * net_torque;
-
-	constraint cst;
-
-	for (int i = 0; i < f->constraintcount; i++) {
-		cst = f->constraints[i];
-		p_vec = UN_get_node(f, cst.n_id)->loc;
-		theta_1 = atan2(p_vec.y, p_vec.x);
-		theta = theta_1 - cst.theta;
-
-		cst_mat->mat[0][i] = cos(cst.theta); // coefficient for x force
-		cst_mat->mat[1][i] = sin(cst.theta); // coefficient for y force
-		cst_mat->mat[2][i] = UN_dist(origin, p_vec) * sin(theta); // coefficient for torque
-	}
-
-	// Solve this system
-	vector *constraintvals;
-	constraintvals = MAT_solve_gausselim(cst_mat, net_vals);
-
-	MAT_printvector(constraintvals);
-
-	// Fill out the force table
+vector* get_forces(frame *f) {
+	// Takes forces defined in f and returns a vector of forces on each node
 	int offset = f->nodecount; // offset to y_forces[0]
 	vector *res = MAT_vector(offset * 2, MAT_YES);
 	int idx;
+	force frc;
 	for (int i = 0; i<f->forcecount; i++) {
 		frc = f->forces[i];
 		idx = UN_get_node_idx(f, frc.n_id);
 		res->vec[idx] += frc.mag * cos(frc.theta);
 		res->vec[idx + offset] += frc.mag * sin(frc.theta);
 	}
-	for (int i = 0; i<f->constraintcount; i++) {
-		cst = f->constraints[i];
-		idx = UN_get_node_idx(f, cst.n_id);
-		res->vec[idx] += constraintvals->vec[i] * cos(cst.theta); // Using the solved constraint magnitudes
-		res->vec[idx + offset] += constraintvals->vec[i] * sin(cst.theta);
-	}
-
-	MAT_freematrix(cst_mat);
-	MAT_freevector(constraintvals);
-	MAT_freevector(net_vals);
-
 	return res;
 }
 
 matrix* build_connectivity_matrix(frame *f) {
 	// Takes cmat (either NULL or preinitialized matrix) and fills out with connectivity matrix
 	//    described by the beam-node connections in f
-	// Such that for the resulting matrix M, node_net_forces = M . beam_net_forces
+	// Such that for the resulting matrix M, node_net_forces = M . [beam_net_forces, constraint_forces]
 	// Where beam_net_forces is sequential as in f, and node_net forces is all x sequential first,
 	//    then all y of those nodes
 
+	// The last three values of the beam forces vector are the forces out of the three constraints applied to the system.
+
 	// Check the inputs are valid
 	int beamcount = f->beamcount;
-	if (beamcount % 2) unsafeerror("Beamcount must be even");
-	if (2 * (f->nodecount) != beamcount) {
+	int nodecount = f->nodecount;
+	if (2 * (nodecount) - 3 != beamcount) {
 		fprintf(stderr, "Frame nodecount %d Frame beamcount %d\n", f->nodecount, beamcount);
-		unsafeerror("Could not build connectivity matrix.\nBeamcount must be double nodecount for solvable matrix");
+		unsafeerror("Could not build connectivity matrix.\nBeamcount must be 2n - 3 for solvable matrix");
 	}
 	
-	matrix *cmat = MAT_matrix(beamcount, beamcount, MAT_YES);
+	matrix *cmat = MAT_matrix(nodecount * 2, nodecount * 2, MAT_YES);
 
 	// Done with format/error checking
 
@@ -118,8 +54,8 @@ matrix* build_connectivity_matrix(frame *f) {
 	node *n_2;
 	int n1_idx, n2_idx;
 	float coeff_x, coeff_y;
-	int offset = beamcount / 2; // Y forces are node_number + offset
-	for (int i = 0; i < f->beamcount; i++) {
+	int offset = nodecount; // Y forces are node_number + offset
+	for (int i = 0; i < beamcount; i++) {
 		b = f->beams[i];
 		n_1 = UN_get_node(f, b.n1_id); // Get the nodes the beam connects to
 		n_2 = UN_get_node(f, b.n2_id);
@@ -136,6 +72,24 @@ matrix* build_connectivity_matrix(frame *f) {
 		cmat->mat[n2_idx + offset][i] = coeff_y;
 	}
 	// x and y connections should now be populated.
+
+	// Populate the last three columns of the matrix with constraint information
+	int cst_offset = nodecount * 2 - 3;
+	if (f->constraintcount != 3) {
+		fprintf(stderr, "Constraint count: %d\n", f->constraintcount);
+		unsafeerror("System must have three constraints");
+	}
+	constraint c;
+	for (int i = 0; i < f->constraintcount; i++) {
+		c = f->constraints[i];
+		n1_idx = UN_get_node_idx(f, c.n_id);
+
+		// x coefficient of constraint force
+		cmat->mat[n1_idx][i + cst_offset] = cos(c.theta);
+		// y coefficient of constraint force
+		cmat->mat[n1_idx + offset][i + cst_offset] = sin(c.theta);
+	}
+
 	// Uhhhhhh that oughta be it
 	return cmat;
 }
@@ -210,13 +164,22 @@ int main() {
 
 	UN_printframe(f);
 
-	printf("Solving node forces ... ");
-	vector * node_forces = solve_forces(f);
+	printf("Collecting node forces ... ");
+	vector * node_forces = get_forces(f);
 	printf("Done.\n");
 
 	MAT_printvector(node_forces);
 
+	MAT_printmatrix(con_mat);
+
+	printf("Here goes. Solving beam stresses ... ");
+	vector *stress_solutions = MAT_solve_gausselim(con_mat, node_forces);
+	printf("\nDone.");
+
+	MAT_printvector(stress_solutions);
+
 	MAT_freevector(node_forces);
+	MAT_freevector(stress_solutions);
 	MAT_freematrix(con_mat);
 	UN_free_frame(f);
 	return 1;
