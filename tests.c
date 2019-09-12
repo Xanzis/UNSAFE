@@ -76,6 +76,12 @@ int inutil() {
 	printf("Line id 0 found\n");
 	printf("Second item of line id 2: %f\n", IN_get_float(it, 1));
 
+	sct = IN_find_section(framevals, "Nodes");
+	printf("Nodes found\n");
+	it = IN_get_item(sct, 1);
+	printf("Line id 0 found\n");
+	printf("Second item of line id 2: %f\n", IN_get_float(it, 1));
+
 	printf("Freeing table ... ");
 	IN_free_table(framevals);
 	printf("Done.\n");

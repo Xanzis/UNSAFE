@@ -10,15 +10,14 @@ void UN_printcoor(coor c) {
 void UN_printnode(node n) {
 	printf("Node id %05d at ", n.id);
 	UN_printcoor(n.loc);
-	printf("\n");
 }
 
 void UN_printbeam(beam b) {
-	printf("Beam id %05d. Connecting nodes %05d %05d\n", b.id, b.n1_id, b.n2_id);
+	printf("Beam id %05d. Connecting nodes %05d %05d", b.id, b.n1_id, b.n2_id);
 }
 
 void UN_printforce(force f) {
-	printf("Force id %05d. Angle %8.4f Magnitude %8.4f\n", f.id, f.theta, f.mag);
+	printf("Force id %05d. Angle %8.4f Magnitude %8.4f", f.id, f.theta, f.mag);
 }
 
 void UN_printconstraint(constraint c) {
@@ -27,35 +26,35 @@ void UN_printconstraint(constraint c) {
 
 void UN_printframe(frame *f) {
 	printf("Frame readout");
-	printf("Nodes:");
+	printf("\nNodes:");
 	for (int i = 0; i < f->nodecount; i++) {
-		printf("    ");
+		printf("\n    ");
 		UN_printnode(f->nodes[i]);
 	}
-	printf("Beams:");
+	printf("\nBeams:");
 	for (int i = 0; i < f->beamcount; i++) {
-		printf("    ");
+		printf("\n    ");
 		UN_printbeam(f->beams[i]);
 	}
-	printf("Forces:");
+	printf("\nForces:");
 	for (int i = 0; i < f->forcecount; i++) {
-		printf("    ");
+		printf("\n    ");
 		UN_printforce(f->forces[i]);
 	}
-	printf("Constraints:");
+	printf("\nConstraints:");
 	for (int i = 0; i < f->constraintcount; i++) {
-		printf("    ");
+		printf("\n    ");
 		UN_printconstraint(f->constraints[i]);
 	}
-	printf("----\n");
+	printf("\n----\n");
 }
 
 float UN_dist(coor a, coor b) {
 	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
 }
 
-frame* UN_init_frame(int bcount, int ncount, int fcount, int ccount) {
-	frame *res = (frame *) malloc(sizeof (frame));
+void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount) {
+	// frame *res = (frame *) malloc(sizeof (frame)); //Switching to allocation in main()
 	res->beams = (beam *) malloc(bcount * sizeof (beam));
 	res->beamcount = bcount;
 	res->nodes = (node *) malloc(ncount * sizeof (node));
@@ -64,8 +63,6 @@ frame* UN_init_frame(int bcount, int ncount, int fcount, int ccount) {
 	res->forcecount = fcount;
 	res->constraints = (constraint *) malloc(ccount * sizeof (constraint));
 	res->constraintcount = ccount;
-
-	return res;
 }
 
 void UN_free_frame(frame *f) {
@@ -83,6 +80,15 @@ node* UN_get_node(frame *f, int id) {
 		}
 	}
 	return NULL;
+}
+
+int UN_get_node_idx(frame *f, int id) {
+	for (int i = 0; i < f->nodecount; i++) {
+		if (f->nodes[i].id == id) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 beam* UN_get_beam(frame *f, int id) {

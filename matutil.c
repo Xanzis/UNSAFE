@@ -6,9 +6,6 @@
 #include <math.h>
 #include "matutil.h"
 
-#define MAT_YES 1
-#define MAT_NO 0
-
 // Working with floats until further notice
 // All vectors and matrices are zero-indexed.
 // Vectors are column vectors until further notice
@@ -171,7 +168,10 @@ matrix* MAT_multiply_mm(matrix *ma, matrix *mb) {
 }
 
 vector* MAT_multiply_mv(matrix *m, vector *v) {
-	if (m->cols != v->rows) matutilerror("MAT_multiply_mv: input matrix / vector misaligned");
+	if (m->cols != v->rows) {
+		fprintf(stderr, "Matrix column count %d Vector row count %d", m->cols, v->rows);
+		matutilerror("MAT_multiply_mv: input matrix / vector misaligned");
+	}
 
 	vector *res = MAT_vector(m->rows, MAT_NO);
 
@@ -190,7 +190,10 @@ vector* MAT_solve_gausselim(matrix *m, vector *v) {
 	int n = m->cols;
 
 	if (m->rows != n) matutilerror("MAT_solve_gausselim: input matrix is not square");
-	if (v->rows != n) matutilerror("MAT_solve_gausselim: input vector / matrix sizes misaligned");
+	if (v->rows != n) {
+		fprintf(stderr, "Matrix column count %d Vector row count %d\n", m->cols, v->rows);
+		matutilerror("MAT_solve_gausselim: input vector / matrix sizes misaligned");
+	}
 
 	vector *x = MAT_vector(n, MAT_NO);
 	matrix *a = MAT_copymatrix(m);

@@ -58,9 +58,10 @@ void UN_printframe(frame *f);
 
 float UN_dist(coor a, coor b);
 
-frame* UN_init_frame(int bcount, int ncount, int fcount, int ccount);
+void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount);
 void UN_free_frame(frame *f);
 node* UN_get_node(frame *f, int id);
+int UN_get_node_idx(frame *f, int id);
 beam* UN_get_beam(frame *f, int id);
 
 void UN_compute_beam_vals(frame *f);

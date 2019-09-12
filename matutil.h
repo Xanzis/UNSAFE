@@ -1,6 +1,9 @@
 #ifndef _MATRIXUTIL_
 #define _MATRIXUTIL_
 
+#define MAT_YES 1
+#define MAT_NO 0
+
 // Collection of Linear Algebra Utilities
 // Amended from CFD/
 
