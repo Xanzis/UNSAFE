@@ -218,7 +218,7 @@ vector* MAT_solve_gausselim(matrix *m, vector *v) {
 		if (max_row == -1) {
 			fprintf(stderr, "\nCurrent column %d\n", col);
 			MAT_printmatrix(a);
-			matutilerror("MAT_solve_gausselim: solve error 1");
+			matutilerror("MAT_solve_gausselim: solve error 1 (matrix possibly singular)");
 		}
 		// This might actually happen even if the system is solvable. See if it's a problem.
 		// Fix would be to ensure a row doesn't get chosen earlier if it's the only row with a value in a certain column.

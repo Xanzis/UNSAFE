@@ -19,6 +19,7 @@ struct beam {
 	int n1_id;
 	int n2_id;
 	float length;
+	float force;
 	// Maybe compute angle, too: we'll see what stuff is needed
 };
 
@@ -35,6 +36,7 @@ struct constraint {
 	int id;
 	int n_id;
 	float theta;
+	float force;
 };
 
 typedef struct frame frame;

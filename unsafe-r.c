@@ -4,6 +4,7 @@
 #include "matutil.h"
 #include "inutil-r.h"
 #include "undefs.h"
+#include "visutil-2d.h"
 
 void unsafeerror(char *error_text) {
 	printf("Critical error in unsafe-r.c\nError message follows:\n");
@@ -176,7 +177,23 @@ int main() {
 	vector *stress_solutions = MAT_solve_gausselim(con_mat, node_forces);
 	printf("\nDone.");
 
+	// Fill in the force values
+	for (int i = 0; i < f->beamcount; i++) {
+		f->beams[i].force = stress_solutions->vec[i];
+	}
+	for (int i = 0; i < 3; i++) {
+		f->constraints[i].force = stress_solutions->vec[f->beamcount + i];
+	}
+
 	MAT_printvector(stress_solutions);
+
+	// Visualize the resulting frame and save to file
+	plot *plt = VIS_init_plot(400, 200);
+	VIS_set_scale(plt, f); // TODO Make this more intuitive / hide this function - check if performed at first add_frame?
+	VIS_add_frame(plt, f);
+	VIS_save_png(plt);
+
+	VIS_free_plot(plt);
 
 	MAT_freevector(node_forces);
 	MAT_freevector(stress_solutions);

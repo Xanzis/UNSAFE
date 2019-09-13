@@ -3,9 +3,7 @@
 
 #include "undefs.h"
 
-unsigned char VIS_RED[3] = {255, 0, 0};
-unsigned char VIS_GREEN[3] = {0, 255, 0};
-unsigned char VIS_BLUE[3] = {0, 0, 255};
+#define VIS_max(a,b) ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a > _b ? _a : _b; })
 
 typedef struct plot plot;
 struct plot {
@@ -15,11 +13,14 @@ struct plot {
 	float offsetx;
 	float offsety;
 	unsigned char *data;
-}
+};
+
+void visutilerror(char *error_text);
 
 plot* VIS_init_plot(int x, int y);
+void VIS_free_plot(plot *p);
 void VIS_set_scale(plot *p, frame *f);
-void VIS_add_pixel(plot *p, coor c);
+void VIS_add_pixel(plot *p, coor c, unsigned char *color);
 
 void VIS_add_beam(plot *p, frame *f, int beam_id);
 void VIS_add_node(plot *p, frame *f, int node_id);
