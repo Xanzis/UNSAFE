@@ -70,7 +70,7 @@ matrix* build_connectivity_matrix(frame *f) {
 
 		coeff_y = (float) (n_1->loc.y - n_2->loc.y) / (float) b.length;
 		cmat->mat[n1_idx + offset][i] = coeff_y; // Set the y coefficient
-		cmat->mat[n2_idx + offset][i] = coeff_y;
+		cmat->mat[n2_idx + offset][i] = -1 * coeff_y;
 	}
 	// x and y connections should now be populated.
 
@@ -171,6 +171,7 @@ int main() {
 
 	MAT_printvector(node_forces);
 
+	printf("Completed connectivity matrix:");
 	MAT_printmatrix(con_mat);
 
 	printf("Here goes. Solving beam stresses ... ");
