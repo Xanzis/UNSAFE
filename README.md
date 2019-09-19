@@ -17,6 +17,6 @@ The goal: to simulate both rigid and compliant finite element problems in an env
 - [ ] Truss deformation under load
 - [ ] Constraint-free truss deformation (squishing against other objects)
 - [ ] Improved documentation and readability
-- [ ] Improved code usability (Makefile, reorganize file structure, informative executable names)
+- [x] Improved code usability (Makefile, reorganize file structure, informative executable names)
 - [ ] Solid-body modeling, mesh generation, and solid part analysis (far future)
 - [ ] Time-domain modeling (farer future)
