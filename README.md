@@ -1,5 +1,4 @@
-# Utilitarian Numbers: Structural Analysis of Finite Elements
-## (UNSAFE)
+# Utilitarian Numbers: Structural Analysis of Finite Elements (UNSAFE)
 
 Does what it says on the box.
 The goal: to simulate both rigid and compliant finite element problems in an environment built from scratch. The existing programs solve for beam stresses in a fully constrained truss.
