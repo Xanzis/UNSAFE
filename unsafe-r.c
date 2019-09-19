@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "matutil.h"
-#include "inutil-r.h"
-#include "undefs.h"
-#include "visutil-2d.h"
+#include "lib/matutil.h"
+#include "lib/inutil-r.h"
+#include "lib/undefs.h"
+#include "lib/visutil-2d.h"
 
 void unsafeerror(char *error_text) {
 	printf("Critical error in unsafe-r.c\nError message follows:\n");

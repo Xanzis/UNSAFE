@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "matutil.h"
-#include "inutil-r.h"
+#include "../lib/matutil.h"
+#include "../lib/inutil-r.h"
 
 int matutil() {
 	printf("Testing Matutil ...\n");
