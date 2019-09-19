@@ -5,6 +5,8 @@ The goal: to simulate both rigid and compliant finite element problems in an env
 
 ## To Run:
 
+> make
+and then run any of the compiled executables
 
 ## Current Features:
 * Utility routines written from scratch:
