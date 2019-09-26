@@ -12,21 +12,6 @@ void unsafeerror(char *error_text) {
 	exit(1);
 }
 
-vector* get_forces(frame *f) {
-	// Takes forces defined in f and returns a vector of forces on each node
-	int offset = f->nodecount; // offset to y_forces[0]
-	vector *res = MAT_vector(offset * 2, MAT_YES);
-	int idx;
-	force frc;
-	for (int i = 0; i<f->forcecount; i++) {
-		frc = f->forces[i];
-		idx = UN_get_node_idx(f, frc.n_id);
-		res->vec[idx] += frc.mag * cos(frc.theta);
-		res->vec[idx + offset] += frc.mag * sin(frc.theta);
-	}
-	return res;
-}
-
 matrix* build_connectivity_matrix(frame *f) {
 	// Takes cmat (either NULL or preinitialized matrix) and fills out with connectivity matrix
 	//    described by the beam-node connections in f
@@ -166,7 +151,7 @@ int main() {
 	UN_printframe(f);
 
 	printf("Collecting node forces ... ");
-	vector * node_forces = get_forces(f);
+	vector * node_forces = UN_get_forces(f);
 	printf("Done.\n");
 
 	MAT_printvector(node_forces);

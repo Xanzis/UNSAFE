@@ -19,8 +19,8 @@ struct beam {
 	int n1_id;
 	int n2_id;
 	float length;
+	float orig_length; // For unsafe
 	float force;
-	// Maybe compute angle, too: we'll see what stuff is needed
 };
 
 typedef struct force force;
@@ -38,6 +38,15 @@ struct constraint {
 	float theta;
 	float force;
 };
+
+typedef struct wall wall;
+struct wall {
+	int id;
+	float m;
+	float b;
+	float theta; // normal to wall
+	char above; // nonzero if points are constrained to above line
+}
 
 typedef struct frame frame;
 struct frame {
@@ -67,5 +76,6 @@ int UN_get_node_idx(frame *f, int id);
 beam* UN_get_beam(frame *f, int id);
 
 void UN_compute_beam_vals(frame *f);
+vector* get_forces(frame *f);
 
 #endif

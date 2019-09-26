@@ -108,3 +108,18 @@ void UN_compute_beam_vals(frame *f) {
 		f->beams[i].length = UN_dist(a, b);
 	}
 }
+
+vector* get_forces(frame *f) {
+	// Takes forces defined in f and returns a vector of forces on each node
+	int offset = f->nodecount; // offset to y_forces[0]
+	vector *res = MAT_vector(offset * 2, MAT_YES);
+	int idx;
+	force frc;
+	for (int i = 0; i<f->forcecount; i++) {
+		frc = f->forces[i];
+		idx = UN_get_node_idx(f, frc.n_id);
+		res->vec[idx] += frc.mag * cos(frc.theta);
+		res->vec[idx + offset] += frc.mag * sin(frc.theta);
+	}
+	return res;
+}
