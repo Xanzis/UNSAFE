@@ -92,7 +92,7 @@ void setup(frame *f, char *fileloc) {
 	bsect = IN_find_section(ftable, "Beams");
 	fsect = IN_find_section(ftable, "Forces");
 	csect = IN_find_section(ftable, "Constraints");
-	UN_init_frame(f, bsect->itemcount, nsect->itemcount, fsect->itemcount, csect->itemcount);
+	UN_init_frame(f, bsect->itemcount, nsect->itemcount, fsect->itemcount, csect->itemcount, 0);
 
 	item* temp_item_ptr;
 

@@ -53,7 +53,7 @@ float UN_dist(coor a, coor b) {
 	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
 }
 
-void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount) {
+void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount, int wcount) {
 	// frame *res = (frame *) malloc(sizeof (frame)); //Switching to allocation in main()
 	res->beams = (beam *) malloc(bcount * sizeof (beam));
 	res->beamcount = bcount;
@@ -63,6 +63,8 @@ void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount) {
 	res->forcecount = fcount;
 	res->constraints = (constraint *) malloc(ccount * sizeof (constraint));
 	res->constraintcount = ccount;
+	res->walls = (wall *) malloc(wcount * sizeof (wall));
+	res->wallcount = wcount;
 }
 
 void UN_free_frame(frame *f) {

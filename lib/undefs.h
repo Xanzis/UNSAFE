@@ -58,6 +58,8 @@ struct frame {
 	force *forces;
 	int constraintcount;
 	constraint *constraints;
+	int wallcount;
+	wall *walls
 };
 
 void UN_printcoor(coor c);
