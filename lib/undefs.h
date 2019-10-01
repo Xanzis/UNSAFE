@@ -1,6 +1,9 @@
 #ifndef _UNDEFS_
 #define _UNDEFS_
 
+#include "matutil.h"
+// TODO Resolve type dependencies. If lines like the one above appear more often I'll run into serious problems
+
 typedef struct coor coor;
 struct coor {
 	float x;
@@ -46,7 +49,7 @@ struct wall {
 	float b;
 	float theta; // normal to wall
 	char above; // nonzero if points are constrained to above line
-}
+};
 
 typedef struct frame frame;
 struct frame {
@@ -59,7 +62,7 @@ struct frame {
 	int constraintcount;
 	constraint *constraints;
 	int wallcount;
-	wall *walls
+	wall *walls;
 };
 
 void UN_printcoor(coor c);
@@ -71,13 +74,13 @@ void UN_printframe(frame *f);
 
 float UN_dist(coor a, coor b);
 
-void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount);
+void UN_init_frame(frame *res, int bcount, int ncount, int fcount, int ccount, int wcount);
 void UN_free_frame(frame *f);
 node* UN_get_node(frame *f, int id);
 int UN_get_node_idx(frame *f, int id);
 beam* UN_get_beam(frame *f, int id);
 
 void UN_compute_beam_vals(frame *f);
-vector* get_forces(frame *f);
+vector* UN_get_forces(frame *f);
 
 #endif

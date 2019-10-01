@@ -108,7 +108,7 @@ void setup(frame *f, char *fileloc) {
 	for (int i = 0; i<bsect->itemcount; i++) {
 		temp_item_ptr = bsect->items + i;
 		f->beams[i] = (beam) {temp_item_ptr->id, IN_get_int(temp_item_ptr, 0), 
-			IN_get_int(temp_item_ptr, 1)};
+			IN_get_int(temp_item_ptr, 1), 0, 0, 0};
 	}
 	// Beam length still needs seperate evaluation once frame is loaded
 	// Populate forces

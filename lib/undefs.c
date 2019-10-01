@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include "undefs.h"
-#include "inutil.h"
 
 void UN_printcoor(coor c) {
 	printf("<Coordinate X%8.4f Y%8.4f>", c.x, c.y);
@@ -113,7 +112,7 @@ void UN_compute_beam_vals(frame *f) {
 	}
 }
 
-vector* get_forces(frame *f) {
+vector* UN_get_forces(frame *f) {
 	// Takes forces defined in f and returns a vector of forces on each node
 	int offset = f->nodecount; // offset to y_forces[0]
 	vector *res = MAT_vector(offset * 2, MAT_YES);
