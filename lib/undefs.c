@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "undefs.h"
+#include "inutil.h"
 
 void UN_printcoor(coor c) {
 	printf("<Coordinate X%8.4f Y%8.4f>", c.x, c.y);
@@ -72,6 +73,7 @@ void UN_free_frame(frame *f) {
 	free(f->nodes);
 	free(f->forces);
 	free(f->constraints);
+	free(f->walls);
 	free(f);
 }
 

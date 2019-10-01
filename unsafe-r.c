@@ -121,7 +121,7 @@ void setup(frame *f, char *fileloc) {
 	for (int i = 0; i<csect->itemcount; i++) {
 		temp_item_ptr = csect->items + i;
 		f->constraints[i] = (constraint) {temp_item_ptr->id, IN_get_int(temp_item_ptr, 0), 
-			IN_get_float(temp_item_ptr, 1)};
+			IN_get_float(temp_item_ptr, 1), 0};
 	}
 
 	// Ensure beam references are all sanitary
@@ -142,7 +142,7 @@ void setup(frame *f, char *fileloc) {
 
 int main() {
 	frame *f = (frame *) malloc(sizeof (frame));
-	setup(f, "boxframe.us");
+	setup(f, "examples/boxframe.us");
 	printf("Building connectivity matrix ... ");
 	matrix *con_mat = build_connectivity_matrix(f);
 	printf("Done.\n");
